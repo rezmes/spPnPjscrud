@@ -1,0 +1,142 @@
+import { Version } from '@microsoft/sp-core-library';
+import {
+  BaseClientSideWebPart,
+  IPropertyPaneConfiguration,
+  PropertyPaneTextField
+} from '@microsoft/sp-webpart-base';
+import { escape } from '@microsoft/sp-lodash-subset';
+
+import styles from './PnPcrudWebPart.module.scss';
+import * as strings from 'PnPcrudWebPartStrings';
+import { sp } from "@pnp/sp/presets/all";
+
+
+export interface IPnPcrudWebPartProps {
+  description: string;
+}
+
+export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPartProps> {
+
+  public render(): void {
+    this.domElement.innerHTML = `
+      <div class="${ styles.pnPcrud }">
+<div>
+  <table border="5" bgcolor="aqua">
+    <tr>
+      <td>Please Enter Software ID </td>
+      <td><input type="text" id="txtID"/></td>
+        <td><input type="submit" id="btnRead" value="Read Details"/></td>
+    </tr>
+
+    <tr>
+      <td>Software Title</td>
+      <td><input type="text" id="txtSoftwareTitle"></td>
+    </tr>
+
+    <tr>
+      <td>Software Name</td>
+     <td><input type="text" id="txtSoftwareName"></td>
+    </tr>
+
+    <tr>
+      <td>Software Vendor</td>
+      <td>
+        <select name="" id="ddlSoftwareVendor">
+          <option value="Sun">sun</option>
+          <option value="Oracle">Oracle</option>
+          <option value="Microsoft">Microsoft</option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Software Version</td>
+      <td><input type="text" id="txtSoftwareVersion"></td>
+    </tr>
+
+    <tr>
+      <td>Software Description</td>
+      <td><textarea name="" id="txtSoftwareDescription" cols="40" rows="5"></textarea></td>
+    </tr>
+
+    <tr>
+      <td colspan="2" align="center">
+      <input type="submit" id="btnSubmit" value="Insert Item"/>
+      <input type="submit" id="btnUpdate" value="Update"/>
+      <input type="submit" id="btnDelete" value="Delete"/>
+      </td>
+    </tr>
+
+  </table>
+  </div>
+  <div id="divStatus"></div>
+
+<h2>Get All List Items</h2>
+<hr/>
+
+<div id="spListData"></div>
+
+
+      </div>`;
+
+    this._bindEvents();
+  }
+
+  private _bindEvents(): void {
+    this.domElement.querySelector('#btnSubmit').addEventListener('click', ()=> {this.addListItem();});
+    // this.domElement.querySelector('#btnRead').addEventListener('click', ()=>{this.readListItem();});
+    // this.domElement.querySelector('#btnUpdate').addEventListener('click', ()=>{this.updateListItem();});
+    // this.domElement.querySelector('#btnDelete').addEventListener('click', ()=>{this.deleteListItem();});
+  }
+  private addListItem(): void {
+    var softwaretitle = document.getElementById('txtSoftwareTitle')['value']
+    var softwarename = document.getElementById('txtSoftwareName')['value']
+    var softwareversion = document.getElementById('txtSoftwareVersion')['value']
+    var softwarevendor = document.getElementById('ddlSoftwareVendor')['value']
+    var softwareDescription = document.getElementById('txtSoftwareDescription')['value']
+
+    const siteurl: string = this.context.pageContext.site.absoluteUrl + "/_api/web/lists/getbytitle('SoftwareCatalog')/items";
+
+    sp.web.lists.getByTitle('SoftwareCatalog').items.add({
+      Title: softwaretitle,
+      SoftwareName: softwarename,
+      SoftwareVersion: softwareversion,
+      SoftwareVendor: softwarevendor,
+      SoftwareDescription: softwareDescription
+    }).then(r => {
+      alert('Item Added');
+    }).catch(e => {
+      alert('Error: ' + e);
+    });
+  }
+
+
+
+
+
+  // protected get dataVersion(): Version {
+  //   return Version.parse('1.0');
+  // }
+
+  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    return {
+      pages: [
+        {
+          header: {
+            description: strings.PropertyPaneDescription
+          },
+          groups: [
+            {
+              groupName: strings.BasicGroupName,
+              groupFields: [
+                PropertyPaneTextField('description', {
+                  label: strings.DescriptionFieldLabel
+                })
+              ]
+            }
+          ]
+        }
+      ]
+    };
+  }
+}

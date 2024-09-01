@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "sppnpjscrud-client-side-solution",
+    "id": "dfe84fb3-976c-46cb-91aa-0eff2121989d",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true
+  },
+  "paths": {
+    "zippedPackage": "solution/sppnpjscrud.sppkg"
+  }
+}
