@@ -90,9 +90,26 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
 
   private _bindEvents(): void {
     this.domElement.querySelector('#btnSubmit').addEventListener('click', ()=> {this.addListItem();});
-    // this.domElement.querySelector('#btnRead').addEventListener('click', ()=>{this.readListItem();});
+    this.domElement.querySelector('#btnRead').addEventListener('click', ()=>{this.readListItem();});
     // this.domElement.querySelector('#btnUpdate').addEventListener('click', ()=>{this.updateListItem();});
     // this.domElement.querySelector('#btnDelete').addEventListener('click', ()=>{this.deleteListItem();});
+  }
+  private readListItem() :void {
+
+    const id=document.getElementById('txtID')['value'];
+    // const siteurl: string = this.context.pageContext.site.absoluteUrl + "/_api/web/lists/getbytitle('SoftwareCatalog')/items("+id+")";
+
+    sp.web.lists.getByTitle('SoftwareCatalog').items.getById(id).get().then(r => {
+      document.getElementById('txtSoftwareTitle')['value']=r.Title;
+      document.getElementById('txtSoftwareName')['value']=r.SoftwareName;
+      document.getElementById('txtSoftwareVersion')['value']=r.SoftwareVersion;
+      document.getElementById('ddlSoftwareVendor')['value']=r.SoftwareVendor;
+      document.getElementById('txtSoftwareDescription')['value']=r.SoftwareDescription;
+    }).catch(e => {
+      alert('Error: ' + e.message);
+    });
+
+
   }
   private addListItem(): void {
     var softwaretitle = document.getElementById('txtSoftwareTitle')['value']
@@ -101,7 +118,7 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
     var softwarevendor = document.getElementById('ddlSoftwareVendor')['value']
     var softwareDescription = document.getElementById('txtSoftwareDescription')['value']
 
-    const siteurl: string = this.context.pageContext.site.absoluteUrl + "/_api/web/lists/getbytitle('SoftwareCatalog')/items";
+    // const siteurl: string = this.context.pageContext.site.absoluteUrl + "/_api/web/lists/getbytitle('SoftwareCatalog')/items";
 
     sp.web.lists.getByTitle('SoftwareCatalog').items.add({
       Title: softwaretitle,
