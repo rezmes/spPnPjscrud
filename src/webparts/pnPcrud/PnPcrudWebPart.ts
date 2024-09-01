@@ -16,7 +16,13 @@ export interface IPnPcrudWebPartProps {
 }
 
 export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPartProps> {
-
+  public onInit(): Promise<void> {
+    return super.onInit().then(_ => {
+      sp.setup({
+        spfxContext: this.context
+      });
+    });
+  }
   public render(): void {
     this.domElement.innerHTML = `
       <div class="${ styles.pnPcrud }">
@@ -106,7 +112,7 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
     }).then(r => {
       alert('Item Added');
     }).catch(e => {
-      alert('Error: ' + e);
+      alert('Error: ' + e.message);
     });
   }
 
