@@ -118,7 +118,15 @@ allitems.innerHTML = html;
     this.domElement.querySelector('#btnSubmit').addEventListener('click', ()=> {this.addListItem();});
     this.domElement.querySelector('#btnRead').addEventListener('click', ()=>{this.readListItem();});
     this.domElement.querySelector('#btnUpdate').addEventListener('click', ()=>{this.updateListItem();});
-    // this.domElement.querySelector('#btnDelete').addEventListener('click', ()=>{this.deleteListItem();});
+    this.domElement.querySelector('#btnDelete').addEventListener('click', ()=>{this.deleteListItem();});
+  }
+ private deleteListItem():void {
+const id = document.getElementById('txtID')['value'];
+sp.web.lists.getByTitle('SoftwareCatalog').items.getById(id).delete().then(r => {
+  alert('Item Deleted');
+}).catch(e => {
+  alert('Error: ' + e.message);
+});
   }
   private updateListItem():void {
 var title = document.getElementById('txtSoftwareTitle')['value'];
