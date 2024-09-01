@@ -91,8 +91,29 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
   private _bindEvents(): void {
     this.domElement.querySelector('#btnSubmit').addEventListener('click', ()=> {this.addListItem();});
     this.domElement.querySelector('#btnRead').addEventListener('click', ()=>{this.readListItem();});
-    // this.domElement.querySelector('#btnUpdate').addEventListener('click', ()=>{this.updateListItem();});
+    this.domElement.querySelector('#btnUpdate').addEventListener('click', ()=>{this.updateListItem();});
     // this.domElement.querySelector('#btnDelete').addEventListener('click', ()=>{this.deleteListItem();});
+  }
+  private updateListItem():void {
+var title = document.getElementById('txtSoftwareTitle')['value'];
+var softwareVender = document.getElementById('ddlSoftwareVendor')['value'];
+var softwareVersion = document.getElementById('txtSoftwareVersion')['value'];
+var softwareName = document.getElementById('txtSoftwareName')['value'];
+var softwareDescription = document.getElementById('txtSoftwareDescription')['value'];
+
+var id = document.getElementById('txtID')['value'];
+
+sp.web.lists.getByTitle('SoftwareCatalog').items.getById(id).update({
+  Title: title,
+  SoftwareVendor: softwareVender,
+  SoftwareVersion: softwareVersion,
+  SoftwareName: softwareName,
+  SoftwareDescription: softwareDescription
+}).then(r => {
+  alert('Item Updated');
+}).catch(e => {
+  alert('Error: ' + e.message);
+});
   }
   private readListItem() :void {
 
