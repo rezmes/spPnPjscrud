@@ -86,7 +86,33 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
       </div>`;
 
     this._bindEvents();
+    this.readAllItems();
   }
+  readAllItems() {
+let html: string = "<table border='1' width='100%'style='bordercollapse: collapse;'>"
+html += `<th>ID</th><th>Title</th><th>Software Vendor</th><th>Software Version</th><th>Software Name</th><th>Software Description</th>`
+
+sp.web.lists.getByTitle('SoftwareCatalog').items.get().then((items: any[])=>{
+  items.forEach(function (item) {
+    html += `<tr>
+
+    <td>${item["ID"]}</td>
+    <td>${item["Title"]}</td>
+    <td>${item["SoftwareVendor"]}</td>
+    <td>${item["SoftwareVersion"]}</td>
+    <td>${item["SoftwareName"]}</td>
+    <td>${item["SoftwareDescription"]}</td>
+    </tr>`;
+
+  });
+
+html += `</table>`;
+const allitems: Element = this.domElement.querySelector('#spListData');
+allitems.innerHTML = html;
+});
+  }
+
+
 
   private _bindEvents(): void {
     this.domElement.querySelector('#btnSubmit').addEventListener('click', ()=> {this.addListItem();});
