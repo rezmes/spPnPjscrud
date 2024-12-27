@@ -26,6 +26,20 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
   public render(): void {
     this.domElement.innerHTML = `
       <div class="${ styles.pnPcrud }">
+        <div class="${ styles.container }">
+          <div class="${ styles.row }">
+            <div class="${ styles.column }">
+              <span class="${ styles.title }">Welcome to SharePoint!</span>
+              <p class="${ styles.subTitle }">Customize SharePoint experiences using Web Parts.</p>
+              <div id="contextInfo" class="${ styles.container }"></div>
+              <p class="${ styles.description }">${escape(this.properties.description)}</p>
+              <a href="https://aka.ms/spfx" class="${ styles.button }">
+                <span class="${ styles.label }">Learn more</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
 <div>
   <table border="5" bgcolor="aqua">
     <tr>
@@ -84,10 +98,37 @@ export default class PnPcrudWebPart extends BaseClientSideWebPart<IPnPcrudWebPar
 
 
       </div>`;
-
+      this.getContextInfo();
     this._bindEvents();
     this.readAllItems();
   }
+
+
+  private async getContextInfo(): Promise<void> {
+    try {
+      // Fetch the web details using PnP.js
+      const web = await sp.web.get();
+      const user = await sp.web.currentUser.get();
+
+      // Populate the fetched details into the DOM
+      const contextInfoHtml = `
+        <p class="${styles.description}">Web URL: ${escape(web.Url)}</p>
+        <p class="${styles.description}">Web Title: ${escape(web.Title)}</p>
+        <p class="${styles.description}">Server Relative URL: ${escape(web.ServerRelativeUrl)}</p>
+        <p class="${styles.description}">Current User: ${escape(user.Title)}</p>
+      `;
+
+      // Update the DOM element
+      const contextInfoElement = this.domElement.querySelector('#contextInfo');
+      contextInfoElement.innerHTML = contextInfoHtml;
+    } catch (error) {
+      console.error("Error fetching context info: ", error);
+      const contextInfoElement = this.domElement.querySelector('#contextInfo');
+      contextInfoElement.innerHTML = `<p>Error fetching context information.</p>`;
+    }
+  }
+
+
   readAllItems() {
 let html: string = "<table border='1' width='100%'style='bordercollapse: collapse;'>"
 html += `<th>ID</th><th>Title</th><th>Software Vendor</th><th>Software Version</th><th>Software Name</th><th>Software Description</th>`
